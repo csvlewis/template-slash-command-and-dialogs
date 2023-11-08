@@ -2,13 +2,13 @@ module.exports = {
     confirmation: context => {
         return {
             channel: context.channel_id,
-            text: 'Helpdesk ticket created!',
+            text: 'Cluster Metrics Query Results',
             blocks: JSON.stringify([
                 {
                     type: 'section',
                     text: {
                         type: 'mrkdwn',
-                        text: '*Helpdesk ticket created!*'
+                        text: `*Cluster metrics for ${context.cluster} over ${context.timeframe}*`
                     }
                 },
                 {
@@ -18,17 +18,8 @@ module.exports = {
                     type: 'section',
                     text: {
                         type: 'mrkdwn',
-                        text: `*Title*\n${context.title}\n\n*Description*\n${context.description}`
+                        text: context.data
                     }
-                },
-                {
-                    type: 'context',
-                    elements: [
-                        {
-                            type: 'mrkdwn',
-                            text: `*Urgency*: ${context.urgency}`
-                        }
-                    ]
                 }
             ])
         }
@@ -40,79 +31,413 @@ module.exports = {
                 type: 'modal',
                 title: {
                     type: 'plain_text',
-                    text: 'Submit a helpdesk ticket'
+                    text: 'Query Cluster Metrics'
                 },
                 callback_id: 'submit-ticket',
                 submit: {
                     type: 'plain_text',
-                    text: 'Submit'
+                    text: 'Run Query'
                 },
                 blocks: [
                     {
-                        block_id: 'title_block',
+                        block_id: 'cluster_block',
                         type: 'input',
                         label: {
                             type: 'plain_text',
-                            text: 'Title'
+                            text: 'Cluster'
                         },
                         element: {
-                            action_id: 'title',
-                            type: 'plain_text_input'
-                        },
-                        hint: {
-                            type: 'plain_text',
-                            text: '30 second summary of the problem'
-                        }
-                    },
-                    {
-                        block_id: 'description_block',
-                        type: 'input',
-                        label: {
-                            type: 'plain_text',
-                            text: 'Description'
-                        },
-                        element: {
-                            action_id: 'description',
-                            type: 'plain_text_input',
-                            multiline: true
-                        },
-                        optional: true
-                    },
-                    {
-                        block_id: 'urgency_block',
-                        type: 'input',
-                        label: {
-                            type: 'plain_text',
-                            text: 'Importance'
-                        },
-                        element: {
-                            action_id: 'urgency',
+                            action_id: 'cluster',
                             type: 'static_select',
                             options: [
                                 {
                                     text: {
                                         type: "plain_text",
-                                        text: "High"
+                                        text: "alg-prod"
                                     },
-                                    value: "high"
+                                    value: "alg-prod"
                                 },
                                 {
                                     text: {
                                         type: "plain_text",
-                                        text: "Medium"
+                                        text: "allegro-dev1-blue"
                                     },
-                                    value: "medium"
+                                    value: "allegro-dev1-blue"
                                 },
                                 {
                                     text: {
                                         type: "plain_text",
-                                        text: "Low"
+                                        text: "applelg-prod"
                                     },
-                                    value: "low"
+                                    value: "applelg-prod"
+                                },
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "atlassian-prod"
+                                    },
+                                    value: "atlassian-prod"
+                                },
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "autodesk-prod"
+                                    },
+                                    value: "autodesk-prod"
+                                },
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "bmind-staging"
+                                    },
+                                    value: "bmind-staging"
+                                },
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "bridebook-prod"
+                                    },
+                                    value: "bridebook-prod"
+                                },
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "bs-prod"
+                                    },
+                                    value: "bs-prod"
+                                },
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "bw-prod"
+                                    },
+                                    value: "bw-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "prod"
+                                    },
+                                    value: "prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "cm-prod"
+                                    },
+                                    value: "cm-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "ctc-prod"
+                                    },
+                                    value: "ctc-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "dell-prod"
+                                    },
+                                    value: "dell-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "demo-prod"
+                                    },
+                                    value: "demo-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "em-staging"
+                                    },
+                                    value: "em-staging"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "fiskars-prod"
+                                    },
+                                    value: "fiskars-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "gohealth-prod"
+                                    },
+                                    value: "gohealth-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "gohealth-prod-qa"
+                                    },
+                                    value: "gohealth-prod-qa"
+                                },
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "gohealth-prod-uat"
+                                    },
+                                    value: "gohealth-prod-uat"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "hearst-prod"
+                                    },
+                                    value: "hearst-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "hft-prod"
+                                    },
+                                    value: "hft-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "homer-prod1-ap-south-1"
+                                    },
+                                    value: "homer-prod1-ap-south-1"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "homer-prod1-us-east-1"
+                                    },
+                                    value: "homer-prod1-us-east-1"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "homer-staging1-us-east-1"
+                                    },
+                                    value: "homer-staging1-us-east-1"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "hp-prod"
+                                    },
+                                    value: "hp-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "jh-prod"
+                                    },
+                                    value: "jh-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "lla-prod"
+                                    },
+                                    value: "lla-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "local-dev"
+                                    },
+                                    value: "local-dev"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "merkle-staging"
+                                    },
+                                    value: "merkle-staging"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "mk-prod"
+                                    },
+                                    value: "mk-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "mr-platform-staging1-blue"
+                                    },
+                                    value: "mr-platform-staging1-blue"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "mr-platform-staging2-blue"
+                                    },
+                                    value: "mr-platform-staging2-blue"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "mr-platform-staging3-blue"
+                                    },
+                                    value: "mr-platform-staging3-blue"
+                                },
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "mr-prod"
+                                    },
+                                    value: "mr-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "mr-review1"
+                                    },
+                                    value: "mr-review1"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "mtb-prod"
+                                    },
+                                    value: "mtb-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "outside-media-prod"
+                                    },
+                                    value: "outside-media-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "sca-prod"
+                                    },
+                                    value: "sca-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "skechers-prod"
+                                    },
+                                    value: "skechers-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "sony-prod"
+                                    },
+                                    value: "sony-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "tcb-prod"
+                                    },
+                                    value: "tcb-prod"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "thd-staging"
+                                    },
+                                    value: "thd-staging"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "thdca-prod"
+                                    },
+                                    value: "thdca-prod"
+                                },
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "tkc-dev1-blue"
+                                    },
+                                    value: "tkc-dev1-blue"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "tkc-dev1-green"
+                                    },
+                                    value: "tkc-dev1-green"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "tkc-prod1-blue"
+                                    },
+                                    value: "tkc-prod1-blue"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "kc-staging1-blue"
+                                    },
+                                    value: "kc-staging1-blue"
+                                },                                
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "tkc-staging1-green"
+                                    },
+                                    value: "tkc-staging1-green"
                                 }
                             ]
                         },
-                        optional: true
+                        hint: {
+                            type: 'plain_text',
+                            text: 'Select the cluster to query'
+                        }
+                    },
+                    {
+                        block_id: 'timeframe_block',
+                        type: 'input',
+                        label: {
+                            type: 'plain_text',
+                            text: 'Timeframe'
+                        },
+                        element: {
+                            action_id: 'timeframe',
+                            type: 'static_select',
+                            options: [
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "Last 24 hours"
+                                    },
+                                    value: "DAY"
+                                },
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "Last week"
+                                    },
+                                    value: "WEEK"
+                                },
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "Last month"
+                                    },
+                                    value: "MONTH"
+                                },
+                                {
+                                    text: {
+                                        type: "plain_text",
+                                        text: "Last year"
+                                    },
+                                    value: "YEAR"
+                                }
+                            ]
+                        },
+                        hint: {
+                            type: 'plain_text',
+                            text: 'Select the query timeframe'
+                        }
                     }
                 ]
             })
